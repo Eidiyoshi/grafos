@@ -97,23 +97,6 @@ int * busca_em_largura(p_grafo g, int s) {
     return pai;
 }
 
-void enfileiraPrioridade(p_fila f, int n, int indexAtual, int distanciaAtual){
-    enfileira(f, indexAtual, distanciaAtual);
-    for(int i = 1; i < n ; i++){
-            int distancia = f->filaDistancia[i];
-            int index = f->fila[i];
-            int j = i - 1;
-
-            while( j >= 0 && f->filaDistancia[j] > distancia){
-                f->filaDistancia[j + 1] = f->filaDistancia[j];
-                f->fila[j + 1] = f->fila[j];
-                j--;
-            }
-            f->filaDistancia[j + 1] = distancia;
-            f->fila[j + 1] = index;
-    }
-}
-
 void dijsktra(p_grafo g, int origem, int alvo, int apenasAlvo){
     int *distancia = malloc(g->n * sizeof(int));
     int *visitado = malloc(g->n * sizeof(int));

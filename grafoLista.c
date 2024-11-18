@@ -142,24 +142,6 @@ int * busca_em_largura(p_grafo g, int s) {
     return pai;
 }
 
-void enfileiraPrioridade(p_fila f, int n, int indexAtual, int distanciaAtual){
-    enfileira(f, indexAtual, distanciaAtual);
-    for(int i = 1; i < n ; i++){
-            int distancia = f->filaDistancia[i];
-            int index = f->fila[i];
-            int j = i - 1;
-
-            while( j >= 0 && f->filaDistancia[j] > distancia){
-                f->filaDistancia[j + 1] = f->filaDistancia[j];
-                f->fila[j + 1] = f->fila[j];
-                j--;
-            }
-            f->filaDistancia[j + 1] = distancia;
-            f->fila[j + 1] = index;
-    }
-}
-
-
 void dijsktra(p_grafo g, int origem, int alvo, int apenasAlvo ){
     int *distancia = malloc(g->n * sizeof(int));
     int *visitado = malloc(g->n * sizeof(int));
@@ -181,6 +163,7 @@ void dijsktra(p_grafo g, int origem, int alvo, int apenasAlvo ){
         v = desenfileira(fPrioridade);
         visitado[v] = 1;
 
+        printf("%d",v);
         if(v == alvo) achado = 1;
 
         for(listaAdjacente = g->adjacencia[v]; listaAdjacente != NULL; listaAdjacente = listaAdjacente->prox){ // considerando todos os possiveis lugares pra ir
@@ -188,7 +171,6 @@ void dijsktra(p_grafo g, int origem, int alvo, int apenasAlvo ){
                 distancia[listaAdjacente->v] = distancia[v] + listaAdjacente->d;
                 pai[listaAdjacente->v] = v;
                 enfileiraPrioridade(fPrioridade, g->n, listaAdjacente->v, distancia[listaAdjacente->v]);
-                visitado[listaAdjacente->v] = 1;
             }
         }
     }
@@ -200,7 +182,7 @@ void dijsktra(p_grafo g, int origem, int alvo, int apenasAlvo ){
             printf("Distancia de %d\n",distancia[v]);
             printf("Caminho Inverso: ");
             s = v;
-            while(s != 0){
+            while(s != origem){
                 s = pai[s];
                 printf("%d, ",s);
             }
@@ -220,7 +202,8 @@ void dijsktra(p_grafo g, int origem, int alvo, int apenasAlvo ){
 
 void printarLista(int *lista, int n){
     for(int i = 0; i < n; i++){
-        printf("|%d| ", lista[i]);
+        printf("\nnumero: %d\n",i);
+        printf("pai: %d\n",lista[i]);
     }
 }
 
@@ -248,6 +231,7 @@ void main(){
         printf("5- Printar dijisktra com alvo\n");
         printf("6- Printar arvore geradora minima\n");
         printf("7- Caso 1 de arestas para testes com n = 6\n");
+        printf("8- Caso 2 de arestas para testes com n = 7\n");
 
         printf("99- Destruir grafo e sair do programa\n");
 
@@ -314,7 +298,7 @@ void main(){
                 printf("No de origem: ");
                 scanf("%d",&primeiro);
                 if(primeiro < n){
-                    printf("\n");
+
                     dijsktra(grafo, primeiro, segundo, 0);
                 }else
                     printf("erro no input\n");
@@ -329,6 +313,21 @@ void main(){
 
                 insere_aresta(grafo, 3, 5, 2);
                 insere_aresta(grafo, 4, 5, 4);
+                break;
+
+            case 8:
+                insere_aresta(grafo, 0, 1, 4);
+
+                insere_aresta(grafo, 1, 2, 3);
+                insere_aresta(grafo, 1, 4, 2);
+
+                insere_aresta(grafo, 2, 3, 2);
+                insere_aresta(grafo, 2, 6, 5);
+
+                insere_aresta(grafo, 3, 6, 2);
+
+                insere_aresta(grafo, 4, 5, 2);
+
                 break;
             default:
                 destroi_grafo(grafo);

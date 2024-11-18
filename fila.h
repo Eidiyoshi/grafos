@@ -12,6 +12,7 @@
     void enfileira(p_fila p,int conteudo);
     int desenfileira(p_fila p);
     void destroiFilha(p_fila p);
-    int filaVazia(p_fila p)
+    int filaVazia(p_fila p);
+    void enfileiraPrioridade(p_fila f, int n, int indexAtual, int distanciaAtual);
 
 #endif

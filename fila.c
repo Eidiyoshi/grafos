@@ -50,3 +50,21 @@ int filaVazia(p_fila p){
         return 1;
     return 0;
 }
+
+
+void enfileiraPrioridade(p_fila f, int n, int indexAtual, int distanciaAtual){
+    enfileira(f, indexAtual, distanciaAtual);
+    for(int i = 1; i < n ; i++){
+            int distancia = f->filaDistancia[i];
+            int index = f->fila[i];
+            int j = i - 1;
+
+            while( j >= 0 && f->filaDistancia[j] > distancia){
+                f->filaDistancia[j + 1] = f->filaDistancia[j];
+                f->fila[j + 1] = f->fila[j];
+                j--;
+            }
+            f->filaDistancia[j + 1] = distancia;
+            f->fila[j + 1] = index;
+    }
+}
