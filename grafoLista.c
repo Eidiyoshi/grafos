@@ -160,11 +160,11 @@ void enfileiraPrioridade(p_fila f, int n, int indexAtual, int distanciaAtual){
 }
 
 
-void dijsktra(p_grafo g, int origem, int alvo){
+void dijsktra(p_grafo g, int origem, int alvo, int apenasAlvo ){
     int *distancia = malloc(g->n * sizeof(int));
     int *visitado = malloc(g->n * sizeof(int));
     int *pai = malloc(g->n * sizeof(int));
-    int v;
+    int v,achado = 0;
     p_no listaAdjacente;
     p_fila fPrioridade = criarFila();
     for (int w = 0; w < g->n; w++) {
@@ -174,19 +174,14 @@ void dijsktra(p_grafo g, int origem, int alvo){
     }
     distancia[origem] = 0;
     visitado[origem] = 1;
+    pai[origem] = origem;
 
     enfileira(fPrioridade, origem, 0);
     while(!filaVazia(fPrioridade)){
         v = desenfileira(fPrioridade);
-        printf("%d, ",v);
         visitado[v] = 1;
-        if(v == alvo){
-            printf("Alvo encontrado, distancia de %d\n", distancia[v]);
-            printf("Caminho de encontro");
-            for(int i = 0; i < g->n; i++){
-                printf("%d, ",pai[i]);
-            }
-        }
+
+        if(v == alvo) achado = 1;
 
         for(listaAdjacente = g->adjacencia[v]; listaAdjacente != NULL; listaAdjacente = listaAdjacente->prox){ // considerando todos os possiveis lugares pra ir
             if(distancia[v] + listaAdjacente->d < distancia[listaAdjacente->v]){
@@ -195,29 +190,151 @@ void dijsktra(p_grafo g, int origem, int alvo){
                 enfileiraPrioridade(fPrioridade, g->n, listaAdjacente->v, distancia[listaAdjacente->v]);
                 visitado[listaAdjacente->v] = 1;
             }
-
         }
+    }
 
+    if(apenasAlvo){
+        if(achado){
+            int s;
+            printf("Alvo achado\n");
+            printf("Distancia de %d\n",distancia[v]);
+            printf("Caminho Inverso: ");
+            s = v;
+            while(s != 0){
+                s = pai[s];
+                printf("%d, ",s);
+            }
+            printf("\n\n");
+        }else{
+            printf("Alvo nao achado\n\n");
+        }
+    }else{
+        for(int i = 0; i < g->n; i++){
+            printf("numero: %d\n",i);
+            printf("pai: %d\n",pai[i]);
+            printf("distancia: %d\n\n",distancia[i]);
+        }
     }
 
 }
 
+void printarLista(int *lista, int n){
+    for(int i = 0; i < n; i++){
+        printf("|%d| ", lista[i]);
+    }
+}
+
 void main(){
-    int n = 6;
+    printf("Bem vindo, trabalho ED2 grafos\n");
+    printf("Cristian Eidi Yoshimura\n");
+    printf("Grafos de Lista\n");
+
+    int n;
+    printf("O numero de nos desejados: ");
+    scanf("%d",&n);
+
     p_grafo grafo = criar_grafo(n);
 
-    insere_aresta(grafo, 0, 1, 2);
-    insere_aresta(grafo, 0, 2, 1);
+    int primeiro,segundo,distancia;
+    int* lista;
 
-    insere_aresta(grafo, 1, 3, 1);
-    insere_aresta(grafo, 2, 4, 1);
+    int escolha;
+    do{
+        printf("\n\n");
+        printf("1- Inserir aresta\n");
+        printf("2- Remover aresta\n");
+        printf("3- Printar array da busca de profundidade\n");
+        printf("4- Printar array da busca de largura\n");
+        printf("5- Printar dijisktra com alvo\n");
+        printf("6- Printar arvore geradora minima\n");
+        printf("7- Caso 1 de arestas para testes com n = 6\n");
 
-    insere_aresta(grafo, 3, 5, 2);
-    insere_aresta(grafo, 4, 5, 4);
+        printf("99- Destruir grafo e sair do programa\n");
 
-    dijsktra(grafo, 0, 5);
+        printf("Sua escolha: ");
+        scanf("%d", &escolha);
+        switch(escolha){
+            case 1:
+                printf("Primeiro no: ");
+                scanf("%d",&primeiro);
+                printf("Segundo no: ");
+                scanf("%d",&segundo);
+                printf("Distancia entre os nos: ");
+                scanf("%d",&distancia);
+                if(primeiro < n && segundo < n && distancia > 0 && primeiro != segundo){
+                    insere_aresta(grafo, primeiro, segundo, distancia);
+                }else
+                    printf("erro no input\n");
+                break;
 
-    int *lista = busca_em_profundidade(grafo, 0);
+            case 2:
+                printf("Primeiro no: ");
+                scanf("%d",&primeiro);
+                printf("Segundo no: ");
+                scanf("%d",&segundo);
+                if(primeiro < n && segundo < n){
+                    remove_aresta(grafo, primeiro, segundo);
+                }else
+                    printf("erro no input\n");
+                break;
+
+            case 3:
+                printf("No de origem: ");
+                scanf("%d",&primeiro);
+                if(primeiro < n){
+                    lista = busca_em_profundidade(grafo, primeiro);
+                printarLista(lista,n);
+                }else
+                    printf("erro no input\n");
+                break;
+
+            case 4:
+                printf("No de origem: ");
+                scanf("%d",&primeiro);
+                if(primeiro < n){
+                    lista = busca_em_largura(grafo, primeiro);
+                    printarLista(lista,n);
+                }else
+                    printf("\nerro no input\n");
+                break;
+
+            case 5:
+                printf("No de origem: ");
+                scanf("%d",&primeiro);
+                printf("No de alvo: ");
+                scanf("%d",&segundo);
+                if(primeiro < n && segundo < n){
+                    printf("\n");
+                    dijsktra(grafo, primeiro, segundo, 1);
+                }else
+                    printf("erro no input\n");
+                break;
+
+            case 6:
+                printf("No de origem: ");
+                scanf("%d",&primeiro);
+                if(primeiro < n){
+                    printf("\n");
+                    dijsktra(grafo, primeiro, segundo, 0);
+                }else
+                    printf("erro no input\n");
+                break;
+
+            case 7:
+                insere_aresta(grafo, 0, 1, 2);
+                insere_aresta(grafo, 0, 2, 1);
+
+                insere_aresta(grafo, 1, 3, 1);
+                insere_aresta(grafo, 2, 4, 1);
+
+                insere_aresta(grafo, 3, 5, 2);
+                insere_aresta(grafo, 4, 5, 4);
+                break;
+            default:
+                destroi_grafo(grafo);
+        }
+
+    }while(escolha != 99);
 
     return;
 }
