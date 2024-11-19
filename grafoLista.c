@@ -161,16 +161,17 @@ void dijsktra(p_grafo g, int origem, int alvo, int apenasAlvo ){
     enfileira(fPrioridade, origem, 0);
     while(!filaVazia(fPrioridade)){
         v = desenfileira(fPrioridade);
-        visitado[v] = 1;
 
-        printf("%d",v);
         if(v == alvo) achado = 1;
 
         for(listaAdjacente = g->adjacencia[v]; listaAdjacente != NULL; listaAdjacente = listaAdjacente->prox){ // considerando todos os possiveis lugares pra ir
-            if(distancia[v] + listaAdjacente->d < distancia[listaAdjacente->v]){
+            int l = distancia[v] + listaAdjacente->d;
+            int oo = distancia[listaAdjacente->v];
+            if(!visitado[listaAdjacente->v] && (( distancia[v] + listaAdjacente->d ) <= distancia[listaAdjacente->v])){
                 distancia[listaAdjacente->v] = distancia[v] + listaAdjacente->d;
                 pai[listaAdjacente->v] = v;
                 enfileiraPrioridade(fPrioridade, g->n, listaAdjacente->v, distancia[listaAdjacente->v]);
+                visitado[v] = 1;
             }
         }
     }
@@ -179,9 +180,9 @@ void dijsktra(p_grafo g, int origem, int alvo, int apenasAlvo ){
         if(achado){
             int s;
             printf("Alvo achado\n");
-            printf("Distancia de %d\n",distancia[v]);
+            printf("Distancia de %d\n",distancia[alvo]);
             printf("Caminho Inverso: ");
-            s = v;
+            s = alvo;
             while(s != origem){
                 s = pai[s];
                 printf("%d, ",s);
@@ -326,7 +327,7 @@ void main(){
 
                 insere_aresta(grafo, 3, 6, 2);
 
-                insere_aresta(grafo, 4, 5, 2);
+                insere_aresta(grafo, 4, 5, 1);
 
                 break;
             default:

@@ -120,7 +120,7 @@ void dijsktra(p_grafo g, int origem, int alvo, int apenasAlvo){
         if( v == alvo ) achado = 1;
 
         for(int w = 0; w < g->n; w++){ // considerando todos os possiveis lugares pra ir
-            if( g->adj[v][w] && distancia[v] + g->adj[v][w] < distancia[w]){
+            if( g->adj[v][w] && distancia[v] + g->adj[v][w] <= distancia[w]){
                 distancia[w] = distancia[v] + g->adj[v][w];
                 pai[w] = v;
                 enfileiraPrioridade(fPrioridade, g->n, w, distancia[g->adj[v][w]]);
@@ -133,10 +133,10 @@ void dijsktra(p_grafo g, int origem, int alvo, int apenasAlvo){
         if(achado){
                 int s;
                 printf("Alvo achado\n");
-                printf("Distancia de %d\n",distancia[v]);
+                printf("Distancia de %d\n",distancia[alvo]);
                 printf("Caminho Inverso: ");
                 s = v;
-                while(s != 0){
+                while(s != origem){
                     s = pai[s];
                     printf("%d, ",s);
                 }
@@ -183,6 +183,7 @@ void main(){
         printf("5- Printar dijisktra com alvo\n");
         printf("6- Printar arvore geradora minima\n");
         printf("7- Caso 1 de arestas para testes com n = 6\n");
+        printf("8- Caso 2 de arestas para testes com n = 7\n");
 
         printf("99- Destruir grafo e sair do programa\n");
 
@@ -265,6 +266,22 @@ void main(){
                 insere_aresta(grafo, 3, 5, 2);
                 insere_aresta(grafo, 4, 5, 4);
                 break;
+
+            case 8:
+                insere_aresta(grafo, 0, 1, 4);
+
+                insere_aresta(grafo, 1, 2, 3);
+                insere_aresta(grafo, 1, 4, 2);
+
+                insere_aresta(grafo, 2, 3, 2);
+                insere_aresta(grafo, 2, 6, 5);
+
+                insere_aresta(grafo, 3, 6, 2);
+
+                insere_aresta(grafo, 4, 5, 1);
+
+                break;
+
             default:
                 destroi_grafo(grafo);
         }

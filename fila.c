@@ -1,3 +1,4 @@
+#include <limits.h>
 
 typedef struct {
     int tamanho;
@@ -13,7 +14,7 @@ p_fila criarFila(){
     p->fila = malloc( 50 * sizeof(int));
     p->filaDistancia = malloc( 50 * sizeof(int));
     for(int i = 0; i < 50; i ++ ){
-        p->fila[i] = NULL;
+        p->fila[i] = -1;
         p->filaDistancia[i] = INT_MAX;
     }
     return p;
